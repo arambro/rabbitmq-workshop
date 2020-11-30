@@ -25,12 +25,14 @@ namespace game.Infrastructure
 
         protected void PublishToPlayers<T>(T message, string routingKey)
         {
-            this.rabbitMqContext.PublishMessage(RabbitMQContext.PlayersExchange, routingKey, message);
+            // TODO: SET THE CORRECT EXCHANGE NAME TO PUBLISH TO PLAYERS
+            this.rabbitMqContext.PublishMessage("", routingKey, message);
         }
 
         protected void PublishToReferees<T>(T message, string routingKey)
         {
-            this.rabbitMqContext.PublishMessage(RabbitMQContext.RefereesExchange, routingKey, message);
+            // TODO: SET THE CORRECT EXCHANGE NAME TO PUBLISH TO REFEREES
+            this.rabbitMqContext.PublishMessage("", routingKey, message);
         }
 
         protected virtual void ConsumeMatchStarted(MatchStarted message)

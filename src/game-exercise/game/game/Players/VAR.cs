@@ -12,10 +12,12 @@ namespace game.Players
         public VAR()
             : base(
                 "VAR",
-                RabbitMQContext.RefereesExchange,
 
-                // TODO: SET THE CORRECT ROUTING KEY
-                "*.goal")
+                // TODO: SET THE CORRECT EXCHANGE NAME (WHERE THE VAR WILL SUBSCRIBE)
+                "",
+
+                // TODO: SET THE CORRECT ROUTING KEY (KEY USED TO BIND WITH THE EXCHANGE)
+                "")
         {
             this.random = new Random(Guid.NewGuid().GetHashCode());
         }
@@ -28,7 +30,11 @@ namespace game.Players
 
             if (this.ValidateGoal(message))
             {
-                this.PublishToReferees(new ValidGoal(message), $"{message.Team}.validgoal");
+                this.PublishToReferees(
+                    new ValidGoal(message),
+
+                    // TODO: SET THE CORRECT ROUTING_KEY FOR PUBLISHING THE MESSAGE
+                    "");
             }
         }
 

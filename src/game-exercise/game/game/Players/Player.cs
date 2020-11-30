@@ -9,26 +9,18 @@ namespace game.Players
 {
     public class Player : Component
     {
-        private const int RandomRange = 100;
-        private readonly Dictionary<Position, int> finishingChance = new Dictionary<Position, int>
-        {
-            {Position.GoalKeeper, 1},
-            {Position.Defender, 2},
-            {Position.Winger, 5},
-            {Position.Midfielder, 5},
-            {Position.Striker, 7}
-        };
-
         private readonly CancellationTokenSource cancellationTokenSource;
         private readonly Random random;
 
         public Player(string id, int number, string name, Position position)
             : base(
                 id,
-                RabbitMQContext.PlayersExchange,
 
-                // TODO: SET THE CORRECT ROUTING KEY
-                string.Empty)
+                // TODO: SET THE CORRECT EXCHANGE NAME (WHERE THE PLAYER WILL SUBSCRIBE)
+                "",
+
+                // TODO: SET THE CORRECT ROUTING KEY (KEY USED TO BIND WITH THE EXCHANGE)
+                "")
         {
             this.cancellationTokenSource = new CancellationTokenSource();
             this.random = new Random(Guid.NewGuid().GetHashCode());
@@ -83,7 +75,7 @@ namespace game.Players
                         },
 
                         // TODO: SET THE CORRECT ROUTING_KEY
-                        $"{this.Number}.goal");
+                        "");
                 }
                 Thread.Sleep(1000);
             }
@@ -102,5 +94,15 @@ namespace game.Players
 
             return false;
         }
+
+        private const int RandomRange = 100;
+        private readonly Dictionary<Position, int> finishingChance = new Dictionary<Position, int>
+        {
+            {Position.GoalKeeper, 1},
+            {Position.Defender, 2},
+            {Position.Winger, 5},
+            {Position.Midfielder, 5},
+            {Position.Striker, 7}
+        };
     }
 }

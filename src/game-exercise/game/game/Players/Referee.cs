@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using game.Infrastructure;
@@ -19,10 +17,12 @@ namespace game.Players
         public Referee()
             : base(
                 "referee",
-                RabbitMQContext.RefereesExchange,
 
-                // TODO: SET THE CORRECT ROUTING KEY
-                "*.validgoal")
+                // TODO: SET THE CORRECT EXCHANGE NAME (WHERE THE REFEREE WILL SUBSCRIBE)
+                "",
+
+                // TODO: SET THE CORRECT ROUTING KEY (KEY USED TO BIND WITH THE EXCHANGE)
+                "")
         {
             this.cancellationTokenSource = new CancellationTokenSource();
             this.scores = new ConcurrentDictionary<string, int>();
@@ -40,7 +40,7 @@ namespace game.Players
             this.PublishToPlayers(
                 new MatchStarted(),
 
-                // TODO: SET THE CORRECT ROUTING_KEY
+                // TODO: SET THE CORRECT ROUTING_KEY FOR PUBLISHING THE MESSAGE
                 "");
 
             Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -79,7 +79,7 @@ namespace game.Players
             this.PublishToPlayers(
                 new MatchFinished(),
 
-                // TODO: SET THE CORRECT ROUTING_KEY
+                // TODO: SET THE CORRECT ROUTING_KEY FOR PUBLISHING THE MESSAGE
                 "");
 
             Task.Delay(1000, this.cancellationTokenSource.Token);

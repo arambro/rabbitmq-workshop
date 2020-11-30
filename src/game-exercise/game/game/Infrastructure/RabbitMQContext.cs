@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -8,9 +7,6 @@ namespace game.Infrastructure
 {
     public class RabbitMQContext
     {
-        public const string PlayersExchange = "players_exchange";
-        public const string RefereesExchange = "referees_exchange";
-
         private IConnection connection;
         private IModel model;
 
@@ -32,18 +28,16 @@ namespace game.Infrastructure
 
         internal void SetupExchanges()
         {
+            // TODO: SET AN EXCHANGE FOR THE PLAYERS
             this.model.ExchangeDeclare(
-                PlayersExchange,
-
-                // TODO: SET THE CORRECT EXCHANGE TYPE
-                ExchangeType.Fanout,
+                "", // NAME
+                "", // EXCHANGE TYPE
                 durable: true);
 
+            // TODO: SET AN EXCHANGE NAME FOR REFEREES
             this.model.ExchangeDeclare(
-                RefereesExchange,
-
-                // TODO: SET THE CORRECT EXCHANGE TYPE
-                ExchangeType.Topic,
+                "", // NAME
+                "", // EXCHANGE TYPE
                 durable: true);
         }
 
@@ -70,10 +64,7 @@ namespace game.Infrastructure
         internal void PublishMessage<T>(string exchangeName, string routingKey, T message)
         {
             var basicProperties = this.model.CreateBasicProperties();
-            basicProperties.Headers = new Dictionary<string, object>
-            {
-                { "Content-Type", "application/json" }
-            };
+            basicProperties.ContentType = "application/json";
             basicProperties.Type = typeof(T).FullName;
 
             var jsonSerializedMessage = Newtonsoft.Json.JsonConvert.SerializeObject(message);
