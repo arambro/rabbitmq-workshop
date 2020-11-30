@@ -15,12 +15,10 @@ namespace game.Players
         public Player(string id, int number, string name, Position position)
             : base(
                 id,
+                RabbitMQContext.PlayersExchange,
 
-                // TODO: SET THE CORRECT EXCHANGE NAME (WHERE THE PLAYER WILL SUBSCRIBE)
-                "",
-
-                // TODO: SET THE CORRECT ROUTING KEY (KEY USED TO BIND WITH THE EXCHANGE)
-                "")
+                // TODO: SET THE CORRECT ROUTING KEY
+                string.Empty)
         {
             this.cancellationTokenSource = new CancellationTokenSource();
             this.random = new Random(Guid.NewGuid().GetHashCode());
@@ -66,20 +64,16 @@ namespace game.Players
             {
                 if (this.TryScore())
                 {
-                    var goal = new Goal {
-                        Team = this.Team.Name,
-                        PlayerNumber = this.Number,
-                        PlayerName = this.Name
-                    };
-
-                    this.Publish(
-                        goal,
-
-                        // TODO: SET THE CORRECT EXCHANGE NAME TO PUBLISH TO REFEREES
-                        "",
+                    this.PublishToReferees(
+                        new Goal
+                        {
+                            Team = this.Team.Name,
+                            PlayerNumber = this.Number,
+                            PlayerName = this.Name
+                        },
 
                         // TODO: SET THE CORRECT ROUTING_KEY
-                        "");
+                        $"{this.Number}.goal");
                 }
                 Thread.Sleep(1000);
             }
