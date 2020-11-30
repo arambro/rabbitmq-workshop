@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -7,6 +8,9 @@ namespace game.Infrastructure
 {
     public class RabbitMQContext
     {
+        public const string PlayersExchange = "players_exchange";
+        public const string RefereesExchange = "referees_exchange";
+
         private IConnection connection;
         private IModel model;
 
@@ -28,16 +32,18 @@ namespace game.Infrastructure
 
         internal void SetupExchanges()
         {
-            // TODO: SET AN EXCHANGE FOR THE PLAYERS
             this.model.ExchangeDeclare(
-                "", // NAME
-                "", // EXCHANGE TYPE
+                PlayersExchange,
+
+                // TODO: SET THE CORRECT EXCHANGE TYPE
+                ExchangeType.Fanout,
                 durable: true);
 
-            // TODO: SET AN EXCHANGE NAME FOR REFEREES
             this.model.ExchangeDeclare(
-                "", // NAME
-                "", // EXCHANGE TYPE
+                RefereesExchange,
+
+                // TODO: SET THE CORRECT EXCHANGE TYPE
+                ExchangeType.Topic,
                 durable: true);
         }
 

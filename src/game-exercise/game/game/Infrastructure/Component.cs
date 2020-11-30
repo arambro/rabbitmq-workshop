@@ -23,9 +23,14 @@ namespace game.Infrastructure
             this.rabbitMqContext.ConsumeQueue(queueName);
         }
 
-        protected void Publish<T>(T message, string exchangeName, string routingKey)
+        protected void PublishToPlayers<T>(T message, string routingKey)
         {
-            this.rabbitMqContext.PublishMessage(exchangeName, routingKey, message);
+            this.rabbitMqContext.PublishMessage(RabbitMQContext.PlayersExchange, routingKey, message);
+        }
+
+        protected void PublishToReferees<T>(T message, string routingKey)
+        {
+            this.rabbitMqContext.PublishMessage(RabbitMQContext.RefereesExchange, routingKey, message);
         }
 
         protected virtual void ConsumeMatchStarted(MatchStarted message)
