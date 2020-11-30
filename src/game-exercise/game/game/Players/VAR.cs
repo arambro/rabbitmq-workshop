@@ -30,8 +30,11 @@ namespace game.Players
 
             if (this.ValidateGoal(message))
             {
-                this.PublishToReferees(
+                this.Publish(
                     new ValidGoal(message),
+
+                    // TODO: SET THE CORRECT EXCHANGE NAME TO PUBLISH TO THE REFEREE
+                    "",
 
                     // TODO: SET THE CORRECT ROUTING_KEY FOR PUBLISHING THE MESSAGE
                     "");

@@ -37,8 +37,11 @@ namespace game.Players
 
             this.StartTimer();
 
-            this.PublishToPlayers(
+            this.Publish(
                 new MatchStarted(),
+
+                // TODO: SET THE CORRECT EXCHANGE NAME TO PUBLISH TO PLAYERS
+                "",
 
                 // TODO: SET THE CORRECT ROUTING_KEY FOR PUBLISHING THE MESSAGE
                 "");
@@ -76,8 +79,11 @@ namespace game.Players
                 Console.WriteLine($"{team}: {score}");
             }
 
-            this.PublishToPlayers(
+            this.Publish(
                 new MatchFinished(),
+
+                // TODO: SET THE CORRECT EXCHANGE NAME TO PUBLISH TO PLAYERS
+                "",
 
                 // TODO: SET THE CORRECT ROUTING_KEY FOR PUBLISHING THE MESSAGE
                 "");
