@@ -66,13 +66,17 @@ namespace game.Players
             {
                 if (this.TryScore())
                 {
-                    this.PublishToReferees(
-                        new Goal
-                        {
-                            Team = this.Team.Name,
-                            PlayerNumber = this.Number,
-                            PlayerName = this.Name
-                        },
+                    var goal = new Goal {
+                        Team = this.Team.Name,
+                        PlayerNumber = this.Number,
+                        PlayerName = this.Name
+                    };
+
+                    this.Publish(
+                        goal,
+
+                        // TODO: SET THE CORRECT EXCHANGE NAME TO PUBLISH TO REFEREES
+                        "",
 
                         // TODO: SET THE CORRECT ROUTING_KEY
                         "");
