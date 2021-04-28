@@ -51,6 +51,8 @@ namespace game.Players
 
             var timespan = (int) (this.matchTime * 1.5);
             this.cancellationTokenSource.Token.WaitHandle.WaitOne(timespan);
+            Console.WriteLine("...");
+            Console.ReadLine();
         }
 
         protected override void ConsumeValidGoal(ValidGoal validGoal)
