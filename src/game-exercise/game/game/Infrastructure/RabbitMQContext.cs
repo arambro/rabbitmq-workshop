@@ -21,7 +21,8 @@ namespace game.Infrastructure
                 UserName = "admin",
                 Password = "1234",
                 HostName = "localhost",
-                Port = 5672
+                Port = 5672,
+                VirtualHost = "football"
             };
 
             this.connection = connectionFactory.CreateConnection();

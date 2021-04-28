@@ -55,7 +55,7 @@ namespace game.Players
         protected override void ConsumeMatchFinished(MatchFinished message)
         {
             // TODO: WHAT CAN WE DO HERE?
-            base.ConsumeMatchFinished(message);
+            this.cancellationTokenSource.Cancel();
         }
 
         private void Play(CancellationToken token)
