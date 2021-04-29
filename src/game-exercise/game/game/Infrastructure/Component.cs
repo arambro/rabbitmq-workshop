@@ -11,21 +11,23 @@ namespace game.Infrastructure
 
         protected string Id;
 
-        public Component(string id, string exchange, string routingKey)
+        public Component(string id)
         {
             this.rabbitMqContext = new RabbitMQContext();
 
             this.Id = id;
-            var queueName = $"{this.Id}_queue";
-            
+        }
+
+        protected void CreateAndBindQueue(string queueName, string exchange, string routingKey)
+        {
             this.rabbitMqContext.SetUpQueue(queueName, exchange, routingKey);
             this.rabbitMqContext.Received += Consume;
             this.rabbitMqContext.ConsumeQueue(queueName);
         }
 
-        protected void PublishToPlayers<T>(T message, string routingKey)
+        protected void PublishToPlayers<T>(T message)
         {
-            this.rabbitMqContext.PublishMessage(RabbitMQContext.PlayersExchange, routingKey, message);
+            this.rabbitMqContext.PublishMessage(RabbitMQContext.PlayersExchange, string.Empty, message);
         }
 
         protected void PublishToReferees<T>(T message, string routingKey)

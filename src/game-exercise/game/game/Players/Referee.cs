@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using game.Infrastructure;
@@ -15,21 +13,26 @@ namespace game.Players
         private readonly CancellationTokenSource cancellationTokenSource;
 
         private readonly ConcurrentDictionary<string, int> scores;
+        private readonly ConsoleColor consoleColor;
+        private Team[] teams;
 
         public Referee()
-            : base(
-                "referee",
-                RabbitMQContext.RefereesExchange,
-
-                // TODO: SET THE CORRECT ROUTING KEY
-                "*.validgoal")
+            : base("referee")
         {
             this.cancellationTokenSource = new CancellationTokenSource();
             this.scores = new ConcurrentDictionary<string, int>();
+            this.consoleColor = ConsoleColor.DarkGreen;
+
+            // TODO: 2. CREATE ALL THE NECESSARY QUEUES AND BIND THEM USING THE APPROPRIATE ROUTING KEY. (WHERE THE REFEREE WILL SUBSCRIBE)
+            this.CreateAndBindQueue(
+                this.Id, // QUEUE NAME
+                RabbitMQContext.RefereesExchange, // EXCHANGE NAME
+                "*.validgoal"); // ROUTING KEY
         }
 
         public void StartMatch(params Team[] teams)
         {
+            this.teams = teams;
             foreach (var team in teams)
             {
                 this.scores[team.Name] = 0;
@@ -37,19 +40,16 @@ namespace game.Players
 
             this.StartTimer();
 
-            this.PublishToPlayers(
-                new MatchStarted(),
+            // TODO: 5. PUBLISH THIS MESSAGE ALL THE NECESSARY TIMES WITH THE CORRECT EXCHANGE AND ROUTING KEY FOR THE PLAYERS
+            this.PublishToPlayers(new MatchStarted());
 
-                // TODO: SET THE CORRECT ROUTING_KEY
-                "");
+            Console.ForegroundColor = this.consoleColor;
+            Console.WriteLine($"{Environment.NewLine}MATCH STARTED");
 
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("MATCH STARTED");
-
-            var timespan = (int) (this.matchTime * 1.5);
+            var timespan = (int)(this.matchTime * 1.5);
             this.cancellationTokenSource.Token.WaitHandle.WaitOne(timespan);
-            Console.WriteLine("...");
-            Console.ReadLine();
+            Console.WriteLine($"{Environment.NewLine}...PRESS A KEY TO EXIT...");
+            Console.ReadKey();
         }
 
         protected override void ConsumeValidGoal(ValidGoal validGoal)
@@ -70,7 +70,7 @@ namespace game.Players
 
         private void EndMatch()
         {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.ForegroundColor = this.consoleColor;
             Console.WriteLine($"{Environment.NewLine}MATCH ENDED");
             Console.WriteLine("The match final score is:");
             foreach (var (team, score) in this.scores)
@@ -78,14 +78,10 @@ namespace game.Players
                 Console.WriteLine($"{team}: {score}");
             }
 
-            this.PublishToPlayers(
-                new MatchFinished(),
-
-                // TODO: SET THE CORRECT ROUTING_KEY
-                "");
+            // TODO: 8. PUBLISH THIS MESSAGE ALL THE NECESSARY TIMES WITH THE CORRECT EXCHANGE AND ROUTING KEY FOR THE PLAYERS
+            this.PublishToPlayers(new MatchFinished());
 
             Task.Delay(1000, this.cancellationTokenSource.Token);
-
             this.cancellationTokenSource.Cancel(false);
         }
     }

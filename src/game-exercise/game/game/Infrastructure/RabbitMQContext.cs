@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -33,17 +32,14 @@ namespace game.Infrastructure
 
         internal void SetupExchanges()
         {
+            // TODO: 1. CREATE ALL THE NECESSARY EXCHANGES.
             this.model.ExchangeDeclare(
                 PlayersExchange,
-
-                // TODO: SET THE CORRECT EXCHANGE TYPE
                 ExchangeType.Fanout,
                 durable: true);
 
             this.model.ExchangeDeclare(
                 RefereesExchange,
-
-                // TODO: SET THE CORRECT EXCHANGE TYPE
                 ExchangeType.Topic,
                 durable: true);
         }

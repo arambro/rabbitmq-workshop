@@ -11,7 +11,7 @@ If you remember I'm from Argentina so if there is something I like is football, 
 
 # To Do:
 
-- Create the necessary exchanges, queues and bind them using an appropiate routing key.
+- Create the necessary exchanges, queues and bind them using an appropriate routing key.
 - Publish the referee messages with the correct exchange and routing key for the players.
 - Publish the players messages with the correct exchange and routing key for the VAR/referee.
 - Publish the VAR messages with the correct exchange and routing key for the referee.

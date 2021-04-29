@@ -13,12 +13,7 @@ namespace game.Players
         private readonly Random random;
 
         public Player(string id, int number, string name, Position position)
-            : base(
-                id,
-                RabbitMQContext.PlayersExchange,
-
-                // TODO: SET THE CORRECT ROUTING KEY
-                string.Empty)
+            : base(id)
         {
             this.cancellationTokenSource = new CancellationTokenSource();
             this.random = new Random(Guid.NewGuid().GetHashCode());
@@ -26,6 +21,14 @@ namespace game.Players
             this.Number = number;
             this.Name = name;
             this.Position = position;
+
+            // TODO: 3. CREATE ALL THE NECESSARY QUEUES AND BIND THEM USING THE APPROPRIATE ROUTING KEY. (WHERE THIS PLAYER WILL SUBSCRIBE)
+            this.CreateAndBindQueue(
+                $"{this.Id}_queue", // QUEUE NAME
+                RabbitMQContext.PlayersExchange, // EXCHANGE NAME
+                string.Empty); // ROUTING KEY
+
+            Console.WriteLine($"{this.Number} - {this.Name}.");
         }
 
         public int Number { get; set; }
@@ -54,7 +57,7 @@ namespace game.Players
 
         protected override void ConsumeMatchFinished(MatchFinished message)
         {
-            // TODO: WHAT CAN WE DO HERE?
+            // TODO: 9. WHAT CAN WE DO HERE?
             this.cancellationTokenSource.Cancel();
         }
 
@@ -64,15 +67,16 @@ namespace game.Players
             {
                 if (this.TryScore())
                 {
-                    this.PublishToReferees(
-                        new Goal
-                        {
-                            Team = this.Team.Name,
-                            PlayerNumber = this.Number,
-                            PlayerName = this.Name
-                        },
+                    var goal = new Goal
+                    {
+                        Team = this.Team.Name,
+                        PlayerNumber = this.Number,
+                        PlayerName = this.Name
+                    };
 
-                        // TODO: SET THE CORRECT ROUTING_KEY
+                    // TODO: 6. PUBLISH THIS MESSAGE WITH THE CORRECT EXCHANGE AND ROUTING KEY TO THE VAR
+                    this.PublishToReferees(
+                        goal,
                         $"{this.Number}.goal");
                 }
                 Thread.Sleep(1000);

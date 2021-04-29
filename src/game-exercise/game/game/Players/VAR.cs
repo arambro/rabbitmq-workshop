@@ -10,14 +10,15 @@ namespace game.Players
         private readonly Random random;
 
         public VAR()
-            : base(
-                "VAR",
-                RabbitMQContext.RefereesExchange,
-
-                // TODO: SET THE CORRECT ROUTING KEY
-                "*.goal")
+            : base("VAR")
         {
             this.random = new Random(Guid.NewGuid().GetHashCode());
+
+            // TODO: 4. CREATE ALL THE NECESSARY QUEUES AND BIND THEM USING THE APPROPRIATE ROUTING KEY. (WHERE THE VAR WILL SUBSCRIBE)
+            this.CreateAndBindQueue(
+                this.Id, // QUEUE NAME
+                RabbitMQContext.RefereesExchange, // EXCHANGE NAME
+                "*.goal"); // ROUTING KEY
         }
 
         protected override void ConsumeGoal(Goal message)
@@ -28,7 +29,10 @@ namespace game.Players
 
             if (this.ValidateGoal(message))
             {
-                this.PublishToReferees(new ValidGoal(message), $"{message.Team}.validgoal");
+                // TODO: 7. PUBLISH THIS MESSAGE WITH THE CORRECT EXCHANGE AND ROUTING KEY TO THE REFEREE
+                this.PublishToReferees(
+                    new ValidGoal(message),
+                    $"{message.Team}.validgoal");
             }
         }
 
