@@ -13,23 +13,26 @@ namespace game.Players
         private readonly CancellationTokenSource cancellationTokenSource;
 
         private readonly ConcurrentDictionary<string, int> scores;
+        private readonly ConsoleColor consoleColor;
+        private Team[] teams;
 
         public Referee()
-            : base(
-                "referee",
-
-                // TODO: SET THE CORRECT EXCHANGE NAME (WHERE THE REFEREE WILL SUBSCRIBE)
-                "",
-
-                // TODO: SET THE CORRECT ROUTING KEY (KEY USED TO BIND WITH THE EXCHANGE)
-                "")
+            : base("referee")
         {
             this.cancellationTokenSource = new CancellationTokenSource();
             this.scores = new ConcurrentDictionary<string, int>();
+            this.consoleColor = ConsoleColor.DarkGreen;
+
+            // TODO: 2. CREATE ALL THE NECESSARY QUEUES AND BIND THEM USING THE APPROPRIATE ROUTING KEY. (WHERE THE REFEREE WILL SUBSCRIBE)
+            this.CreateAndBindQueue(
+                "", // QUEUE NAME
+                "", // EXCHANGE NAME
+                ""); // ROUTING KEY
         }
 
         public void StartMatch(params Team[] teams)
         {
+            this.teams = teams;
             foreach (var team in teams)
             {
                 this.scores[team.Name] = 0;
@@ -37,21 +40,20 @@ namespace game.Players
 
             this.StartTimer();
 
+
+            // TODO: 5. PUBLISH THIS MESSAGE ALL THE NECESSARY TIMES WITH THE CORRECT EXCHANGE AND ROUTING KEY FOR THE PLAYERS
             this.Publish(
                 new MatchStarted(),
+                "", // EXCHANGE NAME
+                ""); // ROUTING KEY
 
-                // TODO: SET THE CORRECT EXCHANGE NAME TO PUBLISH TO PLAYERS
-                "",
-
-                // TODO: SET THE CORRECT ROUTING_KEY FOR PUBLISHING THE MESSAGE
-                "");
-
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("MATCH STARTED");
+            
+            Console.ForegroundColor = this.consoleColor;
+            Console.WriteLine($"{Environment.NewLine}MATCH STARTED");
 
             var timespan = (int) (this.matchTime * 1.5);
             this.cancellationTokenSource.Token.WaitHandle.WaitOne(timespan);
-            Console.WriteLine("...");
+            Console.WriteLine($"{Environment.NewLine}...PRESS A KEY TO EXIT...");
             Console.ReadLine();
         }
 
@@ -73,7 +75,7 @@ namespace game.Players
 
         private void EndMatch()
         {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.ForegroundColor = this.consoleColor;
             Console.WriteLine($"{Environment.NewLine}MATCH ENDED");
             Console.WriteLine("The match final score is:");
             foreach (var (team, score) in this.scores)
@@ -81,17 +83,15 @@ namespace game.Players
                 Console.WriteLine($"{team}: {score}");
             }
 
+
+            // TODO: 8. PUBLISH THIS MESSAGE ALL THE NECESSARY TIMES WITH THE CORRECT EXCHANGE AND ROUTING KEY FOR THE PLAYERS
             this.Publish(
                 new MatchFinished(),
+                "", // EXCHANGE NAME
+                ""); // ROUTING KEY
 
-                // TODO: SET THE CORRECT EXCHANGE NAME TO PUBLISH TO PLAYERS
-                "",
-
-                // TODO: SET THE CORRECT ROUTING_KEY FOR PUBLISHING THE MESSAGE
-                "");
 
             Task.Delay(1000, this.cancellationTokenSource.Token);
-
             this.cancellationTokenSource.Cancel(false);
         }
     }

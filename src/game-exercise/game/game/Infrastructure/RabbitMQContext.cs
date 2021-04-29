@@ -29,13 +29,7 @@ namespace game.Infrastructure
 
         internal void SetupExchanges()
         {
-            // TODO: SET AN EXCHANGE FOR THE PLAYERS
-            this.model.ExchangeDeclare(
-                "", // NAME
-                "", // EXCHANGE TYPE
-                durable: true);
-
-            // TODO: SET AN EXCHANGE NAME FOR REFEREES
+            // TODO: 1. CREATE ALL THE NECESSARY EXCHANGES.
             this.model.ExchangeDeclare(
                 "", // NAME
                 "", // EXCHANGE TYPE

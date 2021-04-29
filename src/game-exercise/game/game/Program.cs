@@ -15,6 +15,7 @@ namespace game
             var referee = new Referee();
             new VAR();
 
+            Console.ForegroundColor = ConsoleColor.White;
             var madrid = new Team(
                 "REAL MADRID",
                 new List<Player>
@@ -36,6 +37,7 @@ namespace game
                 },
                 ConsoleColor.White);
 
+            Console.ForegroundColor = ConsoleColor.Blue;
             var barcelona = new Team(
                 "BARÇA",
                 new List<Player>

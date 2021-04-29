@@ -13,14 +13,7 @@ namespace game.Players
         private readonly Random random;
 
         public Player(string id, int number, string name, Position position)
-            : base(
-                id,
-
-                // TODO: SET THE CORRECT EXCHANGE NAME (WHERE THE PLAYER WILL SUBSCRIBE)
-                "",
-
-                // TODO: SET THE CORRECT ROUTING KEY (KEY USED TO BIND WITH THE EXCHANGE)
-                "")
+            : base(id)
         {
             this.cancellationTokenSource = new CancellationTokenSource();
             this.random = new Random(Guid.NewGuid().GetHashCode());
@@ -28,6 +21,14 @@ namespace game.Players
             this.Number = number;
             this.Name = name;
             this.Position = position;
+
+            // TODO: 3. CREATE ALL THE NECESSARY QUEUES AND BIND THEM USING THE APPROPRIATE ROUTING KEY. (WHERE THIS PLAYER WILL SUBSCRIBE)
+            this.CreateAndBindQueue(
+                "", // QUEUE NAME
+                "", // EXCHANGE NAME
+                ""); // ROUTING KEY
+
+            Console.WriteLine($"{this.Number} - {this.Name} ready.");
         }
 
         public int Number { get; set; }
@@ -56,7 +57,7 @@ namespace game.Players
 
         protected override void ConsumeMatchFinished(MatchFinished message)
         {
-            // TODO: WHAT CAN WE DO HERE?
+            // TODO: 9. WHAT CAN WE DO HERE?
             base.ConsumeMatchFinished(message);
         }
 
@@ -72,14 +73,11 @@ namespace game.Players
                         PlayerName = this.Name
                     };
 
+                    // TODO: 6. PUBLISH THIS MESSAGE WITH THE CORRECT EXCHANGE AND ROUTING KEY TO THE VAR
                     this.Publish(
                         goal,
-
-                        // TODO: SET THE CORRECT EXCHANGE NAME TO PUBLISH TO REFEREES
-                        "",
-
-                        // TODO: SET THE CORRECT ROUTING_KEY
-                        "");
+                        "", // EXCHANGE NAME
+                        ""); // ROUTING KEY
                 }
                 Thread.Sleep(1000);
             }

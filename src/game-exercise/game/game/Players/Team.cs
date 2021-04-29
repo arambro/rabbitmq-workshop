@@ -12,6 +12,8 @@ namespace game.Players
             this.Name = name;
             this.Players = players;
             this.ConsoleColor = consoleColor;
+            Console.ForegroundColor = consoleColor;
+            Console.WriteLine($"{Environment.NewLine}{name}'s players are ready to join...");
         }
 
         public string Name { get; set; }

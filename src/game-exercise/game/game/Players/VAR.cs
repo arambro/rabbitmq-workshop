@@ -10,16 +10,15 @@ namespace game.Players
         private readonly Random random;
 
         public VAR()
-            : base(
-                "VAR",
-
-                // TODO: SET THE CORRECT EXCHANGE NAME (WHERE THE VAR WILL SUBSCRIBE)
-                "",
-
-                // TODO: SET THE CORRECT ROUTING KEY (KEY USED TO BIND WITH THE EXCHANGE)
-                "")
+            : base("VAR")
         {
             this.random = new Random(Guid.NewGuid().GetHashCode());
+
+            // TODO: 4. CREATE ALL THE NECESSARY QUEUES AND BIND THEM USING THE APPROPRIATE ROUTING KEY. (WHERE THIS PLAYER WILL SUBSCRIBE)
+            this.CreateAndBindQueue(
+                "", // QUEUE NAME
+                "", // EXCHANGE NAME
+                ""); // ROUTING KEY
         }
 
         protected override void ConsumeGoal(Goal message)
@@ -30,14 +29,11 @@ namespace game.Players
 
             if (this.ValidateGoal(message))
             {
+                // TODO: 7. PUBLISH THIS MESSAGE WITH THE CORRECT EXCHANGE AND ROUTING KEY TO THE REFEREE
                 this.Publish(
                     new ValidGoal(message),
-
-                    // TODO: SET THE CORRECT EXCHANGE NAME TO PUBLISH TO THE REFEREE
-                    "",
-
-                    // TODO: SET THE CORRECT ROUTING_KEY FOR PUBLISHING THE MESSAGE
-                    "");
+                    "", // EXCHANGE NAME
+                    ""); // ROUTING KEY
             }
         }
 
