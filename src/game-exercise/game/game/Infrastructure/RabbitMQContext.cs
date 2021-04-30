@@ -12,13 +12,14 @@ namespace game.Infrastructure
 
         public RabbitMQContext()
         {
+            // TODO: 0. Connect the game to RabbitMQ
             var connectionFactory = new ConnectionFactory
             {
-                UserName = "admin",
-                Password = "1234",
                 HostName = "localhost",
                 Port = 5672,
-                VirtualHost = "football"
+                VirtualHost = "",
+                UserName = "",
+                Password = ""
             };
 
             this.connection = connectionFactory.CreateConnection();
